@@ -1,5 +1,5 @@
 import "./ProfilePage.scss";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 
 import {
@@ -14,8 +14,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-import { GET_REPOSITORIES } from "../../api/github.api";
-import { createAdaptedRepositoriesGraphql } from "./../../adapters/github.adapters";
+import { fetchGithubRepositoriesRest } from "../../api/github.api";
 
 import { RepositoryCard } from "../../components/collections/RepositoryCard";
 import { logout } from "../../api/auth.api";
@@ -26,12 +25,27 @@ export const ProfilePage = () => {
   const navigate = useNavigate();
   const [_user, setUser] = useLocalStorage("user");
   const { favoriteRepositories } = _user || {};
+  const [_gihubRepositories, setGithubRepositories] = useState({
+    data: [],
+    loading: false,
+    error: null,
+  });
+
+  useEffect(() => {
+    const getRepositories = async () => {
+      const { data: repos } = await fetchGithubRepositoriesRest(
+        _user?.userName
+      );
+      setGithubRepositories({ loading: false, data: repos, error: null });
+    };
+    getRepositories();
+  }, [_user?.userName]);
 
   const [_filters, setFilters] = useState({ name: "", onlyFavorites: false });
-  const { loading, error, data } = useQuery(GET_REPOSITORIES);
+  const { loading, data } = _gihubRepositories;
   const repositories = useMemo(
     () =>
-      createAdaptedRepositoriesGraphql(data)?.map((repository) => ({
+      data?.map((repository) => ({
         ...repository,
         isFavorite: favoriteRepositories?.includes(repository?.id),
       })),

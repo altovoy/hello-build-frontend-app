@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { InMemoryCache, ApolloClient, HttpLink, gql } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
@@ -49,3 +51,6 @@ export const GET_REPOSITORIES = gql`
     }
   }
 `;
+
+export const fetchGithubRepositoriesRest = (userName) =>
+  axios.get(`${REACT_APP_GIT_API}/users/${userName}/repos`);
