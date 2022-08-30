@@ -1,0 +1,14 @@
+.profile_page {
+  &__container {
+  }
+
+  &__bar {
+    height: 50px;
+    background-color: darkblue;
+  }
+
+  &__content--wrapper {
+    padding: 32px;
+    padding-top: 48px;
+  }
+}

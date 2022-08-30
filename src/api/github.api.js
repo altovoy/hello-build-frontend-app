@@ -1,49 +1,49 @@
-import {
-  InMemoryCache,
-  ApolloClient,
-  ApolloLink,
-  concat,
-  HttpLink,
-  gql
-} from "@apollo/client";
+import { InMemoryCache, ApolloClient, HttpLink, gql } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
+let { REACT_APP_GIT_TOKEN, REACT_APP_GIT_API } = process.env;
 
-let TOKEN = null;
+const httpLink = new HttpLink({
+  uri: REACT_APP_GIT_API + "/graphql",
+});
 
-const authMiddleware = new ApolloLink((req, next) => {
-  if (!req.options.headers) {
-    req.options.headers = {}; // Create the header object if needed.
-  }
-  req.setContext(({ headers = {} }) => ({
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("token");
+
+  return {
     headers: {
       ...headers,
-      authorization: `Bearer ${TOKEN}`,
+      authorization: `Bearer ${token || REACT_APP_GIT_TOKEN}`,
     },
-  }));
-
-  return next(req);
+  };
 });
 
 export const githubClient = new ApolloClient({
-  link: concat(
-    new HttpLink({
-      uri: "https://api.github.com/graphql",
-    }),
-    authMiddleware
-  ),
+  link: authLink.concat(httpLink),
   connectToDevTools: true,
   cache: new InMemoryCache(),
 });
 
 export const GET_REPOSITORIES = gql`
   {
-    search(type: REPOSITORY, query: "language:Javascript", first: 10) {
-      nodes {
-        ... on Repository {
+    repositoryOwner(login: "altovoy") {
+      repositories(
+        first: 100
+        ownerAffiliations: OWNER
+        privacy: PUBLIC
+        orderBy: { field: NAME, direction: ASC }
+      ) {
+        totalCount
+
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+
+        nodes {
+          name
+          description
           id
-          nameWithOwner
-          url
-          descriptionHTML
         }
       }
     }
