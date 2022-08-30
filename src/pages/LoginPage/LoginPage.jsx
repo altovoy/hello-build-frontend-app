@@ -11,10 +11,13 @@ import { CenteredCardLayout } from "../../components/layouts/CenteredCardLayout"
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { useNavigate } from "react-router-dom";
+
 import { loginSchema } from "../../schemas/login.schemas";
 import { login } from "../../api/auth.api";
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
   const [_authStatus, setAuthStatus] = useState({ name: "", message: "" });
   const {
     getValues,
@@ -32,6 +35,7 @@ export const LoginPage = () => {
     try {
       await login(formValues);
       setAuthStatus({ name: "success", message: "Successfully Logged In" });
+      navigate("/profile");
     } catch {
       setAuthStatus({
         name: "error",
