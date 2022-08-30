@@ -1,0 +1,15 @@
+.centered_card_layout {
+  &__container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+  }
+
+  &__card {
+    border-radius: 30px;
+    padding: 16px;
+  }
+}

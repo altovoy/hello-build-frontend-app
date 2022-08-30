@@ -4,4 +4,14 @@ export const defaultTheme = createTheme({
   palette: {
     mode: "dark",
   },
+  components: {
+
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          display: 'block',
+        },
+      }
+    },
+  }
 });

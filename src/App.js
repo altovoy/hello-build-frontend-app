@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 
-import "./App.scss";
+import "./styles/App.scss";
 import { ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 

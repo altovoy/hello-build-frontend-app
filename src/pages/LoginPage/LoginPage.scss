@@ -1,0 +1,21 @@
+.login_page {
+  &__container {
+    padding: 28px 32px;
+    width: 400px;
+  }
+
+  &__title {
+    margin-top: 0;
+    text-align: center;
+  }
+
+  &__text_field {
+    margin-bottom: 8px;
+  }
+
+  &__signup--text{
+    text-align: center;
+  }
+
+  
+}
