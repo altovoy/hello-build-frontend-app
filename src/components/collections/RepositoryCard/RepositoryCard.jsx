@@ -10,7 +10,12 @@ import IconButton from "@mui/material/IconButton";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-export const RepositoryCard = ({ name, description, isFavorite }) => {
+export const RepositoryCard = ({
+  name,
+  description,
+  isFavorite,
+  onToggleFavoritesClick,
+}) => {
   return (
     <Card
       sx={{
@@ -29,7 +34,7 @@ export const RepositoryCard = ({ name, description, isFavorite }) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <IconButton size="small">
+        <IconButton onClick={onToggleFavoritesClick} size="small">
           {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </IconButton>
         <Button size="small">Learn More</Button>

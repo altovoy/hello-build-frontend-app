@@ -3,8 +3,11 @@
   }
 
   &__bar {
-    height: 50px;
-    background-color: darkblue;
+    background-color: black;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__content--wrapper {
