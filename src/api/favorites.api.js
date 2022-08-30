@@ -1,22 +1,11 @@
-const FAVORITE_REPOSITORIES_KEY = "favorite_pokemons";
+import axios from "axios";
 
-export const getFavoriteRepos = async () =>
-  JSON.parse(localStorage.getItem(FAVORITE_REPOSITORIES_KEY) || "[]");
+const baseUri = process.env.REACT_APP_MAIN_API_URI;
 
-export const saveFavoriteRepos = async (favoriteRepos) =>
-  localStorage.setItem(
-    FAVORITE_REPOSITORIES_KEY,
-    JSON.stringify(favoriteRepos)
-  );
+const userUri = `${baseUri}/user`;
 
-export const saveFavoriteRepository = async (id) => {
-  const favoriteRepos = await getFavoriteRepos();
-  favoriteRepos.push(id);
-  await saveFavoriteRepos(favoriteRepos);
-};
-
-export const removeFavoriteRepository = async (id) => {
-  let favoriteRepos = await getFavoriteRepos();
-  favoriteRepos = favoriteRepos.filter((favoriteRepo) => favoriteRepo !== id);
-  await saveFavoriteRepos(favoriteRepos);
-};
+export const toggleFavoriteRepository = (userName, favoriteId) =>
+  axios.post(`${userUri}/toggle_favorite_repo`, {
+    userName,
+    favoriteId,
+  });

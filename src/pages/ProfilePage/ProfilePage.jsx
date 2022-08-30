@@ -23,22 +23,12 @@ import {
   getFavoriteRepos,
   removeFavoriteRepository,
   saveFavoriteRepository,
+  toggleFavoriteRepository,
 } from "./../../api/favorites.api";
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
   const [_favoriteRepos, setFavoriteRepos] = useState([]);
-
-  const fetchFavorites = useCallback(async () => {
-    try {
-      const favorites = await getFavoriteRepos();
-      setFavoriteRepos(favorites);
-    } catch {}
-  }, []);
-
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
 
   const [_filters, setFilters] = useState({ name: "", onlyFavorites: false });
   const { loading, error, data } = useQuery(GET_REPOSITORIES);
@@ -78,12 +68,15 @@ export const ProfilePage = () => {
   };
 
   const handleToggleFavoritesClick = async (repository) => {
-    if (repository.isFavorite) {
-      await removeFavoriteRepository(repository.id);
-    } else {
-      await saveFavoriteRepository(repository.id);
+    try {
+      const toggleResponse = await toggleFavoriteRepository(
+        "altovoy",
+        repository.id
+      );
+      setFavoriteRepos(toggleResponse.data.favoriteRepositories);
+    } catch (err) {
+      console.log(err);
     }
-    await fetchFavorites();
   };
 
   return (
