@@ -89,7 +89,7 @@ export const SignupPage = () => {
 
         <p className="signup_page__signup--text">
           or{" "}
-          <Link href="/login" variant="body2">
+          <Link href="/" variant="body2">
             Login
           </Link>
         </p>

@@ -21,5 +21,6 @@ export const signup = ({ userName, password }) =>
   });
 
 export const logout = async () => {
+  localStorage.setItem("user", null)
   return true;
 };

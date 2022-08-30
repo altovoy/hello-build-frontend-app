@@ -1,5 +1,5 @@
 import "./ProfilePage.scss";
-import React, { useMemo, useState, useEffect, useCallback } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 
 import {
@@ -19,16 +19,13 @@ import { createAdaptedRepositoriesGraphql } from "./../../adapters/github.adapte
 
 import { RepositoryCard } from "../../components/collections/RepositoryCard";
 import { logout } from "../../api/auth.api";
-import {
-  getFavoriteRepos,
-  removeFavoriteRepository,
-  saveFavoriteRepository,
-  toggleFavoriteRepository,
-} from "./../../api/favorites.api";
+import useLocalStorage from "./../../hooks/useLocalStorage";
+import { toggleFavoriteRepository } from "./../../api/favorites.api";
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
-  const [_favoriteRepos, setFavoriteRepos] = useState([]);
+  const [_user, setUser] = useLocalStorage("user");
+  const { favoriteRepositories } = _user || {};
 
   const [_filters, setFilters] = useState({ name: "", onlyFavorites: false });
   const { loading, error, data } = useQuery(GET_REPOSITORIES);
@@ -36,9 +33,9 @@ export const ProfilePage = () => {
     () =>
       createAdaptedRepositoriesGraphql(data)?.map((repository) => ({
         ...repository,
-        isFavorite: _favoriteRepos?.includes(repository?.id),
+        isFavorite: favoriteRepositories?.includes(repository?.id),
       })),
-    [data, _favoriteRepos]
+    [data, favoriteRepositories]
   );
 
   const filteredRepositories = useMemo(
@@ -70,10 +67,13 @@ export const ProfilePage = () => {
   const handleToggleFavoritesClick = async (repository) => {
     try {
       const toggleResponse = await toggleFavoriteRepository(
-        "altovoy",
+        _user?.userName,
         repository.id
       );
-      setFavoriteRepos(toggleResponse.data.favoriteRepositories);
+      setUser((user) => ({
+        ...user,
+        favoriteRepositories: toggleResponse.data.favoriteRepositories,
+      }));
     } catch (err) {
       console.log(err);
     }

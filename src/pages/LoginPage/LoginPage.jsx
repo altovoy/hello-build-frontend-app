@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LoginPage.scss";
 
 import TextField from "@mui/material/TextField";
@@ -15,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 
 import { loginSchema } from "../../schemas/login.schemas";
 import { login } from "../../api/auth.api";
+import useLocalStorage from "./../../hooks/useLocalStorage";
 
 export const LoginPage = () => {
+  const [_user, setUser] = useLocalStorage("user");
   const navigate = useNavigate();
   const [_authStatus, setAuthStatus] = useState({ name: "", message: "" });
   const {
@@ -33,9 +35,9 @@ export const LoginPage = () => {
   const handleLoginButtonClick = async () => {
     const formValues = getValues();
     try {
-      await login(formValues);
+      const loginResponse = await login(formValues);
       setAuthStatus({ name: "success", message: "Successfully Logged In" });
-      navigate("/profile");
+      setUser(loginResponse.data.user);
     } catch {
       setAuthStatus({
         name: "error",
@@ -43,6 +45,12 @@ export const LoginPage = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (_user) {
+      navigate("/profile");
+    }
+  }, [_user, navigate]);
 
   return (
     <CenteredCardLayout>
