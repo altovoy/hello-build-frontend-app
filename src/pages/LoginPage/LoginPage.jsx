@@ -38,10 +38,11 @@ export const LoginPage = () => {
       const loginResponse = await login(formValues);
       setAuthStatus({ name: "success", message: "Successfully Logged In" });
       setUser(loginResponse.data.user);
-    } catch {
+    } catch (error) {
       setAuthStatus({
         name: "error",
-        message: "Error Login, please try again",
+        message:
+          error?.response?.data?.message || "Error Login, please try again",
       });
     }
   };

@@ -14,11 +14,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { signupSchema } from "../../schemas/login.schemas";
 import { signup } from "../../api/auth.api";
 
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 export const SignupPage = () => {
-  const navigate = useNavigate()
-  const [_authStatus, setAuthStatus] = useState({ name: "", message: "" });
+  const navigate = useNavigate();
+  const [_signupStatus, setSignUpStatus] = useState({ name: "", message: "" });
   const {
     getValues,
     register,
@@ -32,14 +32,20 @@ export const SignupPage = () => {
 
   const handleLoginButtonClick = async () => {
     const formValues = getValues();
+
     try {
       await signup(formValues);
-      setAuthStatus({ name: "success", message: "Successfully Signed Up" });
-      navigate("/")
-    } catch {
-      setAuthStatus({
+      setSignUpStatus({
+        name: "success",
+        message: "Successfully Signed Up",
+      });
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    } catch (error) {
+      setSignUpStatus({
         name: "error",
-        message: "Error, please try again",
+        message: error?.response?.data?.message || "Error, please try again",
       });
     }
   };
@@ -83,8 +89,8 @@ export const SignupPage = () => {
           Sign Up
         </Button>
 
-        {_authStatus.name && (
-          <Alert severity={_authStatus.name}>{_authStatus.message}</Alert>
+        {_signupStatus.name && (
+          <Alert severity={_signupStatus.name}>{_signupStatus.message}</Alert>
         )}
 
         <p className="signup_page__signup--text">

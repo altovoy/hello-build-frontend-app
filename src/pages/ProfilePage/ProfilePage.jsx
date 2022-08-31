@@ -1,6 +1,5 @@
 import "./ProfilePage.scss";
 import React, { useMemo, useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
 
 import {
   Backdrop,
@@ -61,7 +60,6 @@ export const ProfilePage = () => {
       ),
     [_filters, repositories]
   );
-  console.log({ data, repositories });
 
   const handleChangeFilter = (e) => {
     setFilters((filters) => ({ ...filters, name: e.target.value }));
@@ -72,10 +70,9 @@ export const ProfilePage = () => {
   };
 
   const handleLogoutButtonClick = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch {}
+    await logout();
+
+    navigate("/");
   };
 
   const handleToggleFavoritesClick = async (repository) => {
