@@ -31,11 +31,20 @@ export const ProfilePage = () => {
   });
 
   useEffect(() => {
+    setGithubRepositories((state) => ({
+      ...state,
+      loading: false,
+      error: null,
+    }));
     const getRepositories = async () => {
-      const { data: repos } = await fetchGithubRepositoriesRest(
-        _user?.userName
-      );
-      setGithubRepositories({ loading: false, data: repos, error: null });
+      try {
+        const { data: repos } = await fetchGithubRepositoriesRest(
+          _user?.userName
+        );
+        setGithubRepositories({ loading: false, data: repos, error: null });
+      } catch (error) {
+        setGithubRepositories({ loading: false, data: null, error });
+      }
     };
     getRepositories();
   }, [_user?.userName]);
@@ -71,7 +80,6 @@ export const ProfilePage = () => {
 
   const handleLogoutButtonClick = async () => {
     await logout();
-
     navigate("/");
   };
 

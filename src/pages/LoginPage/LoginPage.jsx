@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./LoginPage.scss";
 
 import TextField from "@mui/material/TextField";
@@ -18,7 +18,7 @@ import { login } from "../../api/auth.api";
 import useLocalStorage from "./../../hooks/useLocalStorage";
 
 export const LoginPage = () => {
-  const [_user, setUser] = useLocalStorage("user");
+  const [_, setUser] = useLocalStorage("user");
   const navigate = useNavigate();
   const [_authStatus, setAuthStatus] = useState({ name: "", message: "" });
   const {
@@ -38,6 +38,8 @@ export const LoginPage = () => {
       const loginResponse = await login(formValues);
       setAuthStatus({ name: "success", message: "Successfully Logged In" });
       setUser(loginResponse.data.user);
+
+      navigate("/profile");
     } catch (error) {
       setAuthStatus({
         name: "error",
@@ -46,12 +48,6 @@ export const LoginPage = () => {
       });
     }
   };
-
-  useEffect(() => {
-    if (_user) {
-      navigate("/profile");
-    }
-  }, [_user, navigate]);
 
   return (
     <CenteredCardLayout>
